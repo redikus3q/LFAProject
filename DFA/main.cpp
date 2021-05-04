@@ -7,17 +7,6 @@ using namespace std;
 
 ifstream in("a.in");
 
-struct muchie{
-
-    int nod2;
-    char lit;
-    friend ostream& operator<<(ostream& out, muchie& a){
-        out<<a.nod2<<" "<<a.lit;
-        return out;
-    }
-
-};
-
 int n,m,init;
 unordered_map<int, unordered_map<char, int>> mu;
 unordered_set<int> fin;
@@ -72,11 +61,6 @@ vector<int> solve(string word){
 int main(){
 
     read();
-//    for(int i=0;i<=6;i++){
-//        for(auto j:mu[i]){
-//            cout<<j.first<<" "<<j.second<<endl;
-//        }
-//    }
     for(auto i:cuv){
         vector<int> aux=solve(i);
         if(aux[0]==-1){
