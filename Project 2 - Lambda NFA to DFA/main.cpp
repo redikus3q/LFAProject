@@ -9,7 +9,7 @@
 
 using namespace std;
 
-ifstream in("a.in");
+ifstream in("b.in");
 
 typedef unordered_map<int, unordered_map<char, unordered_set<int>>> automat;
 int n, m, init;
@@ -18,7 +18,7 @@ unordered_set<int> fin;
 vector<char> alphabet;
 vector<unordered_set<int>> v;
 
-parsestare(string x) {
+void parsestare(string x) {
     for (int i : x) {
         cout << i;
     }
@@ -107,6 +107,7 @@ void dfa() {
 
 /// nfa to dfa
     unordered_set<string> stari;
+    queue<string> qu;
     string aux, initdfa;
     unordered_map<string, unordered_map<char, string>> dfa;
     set<int> aux1;
@@ -118,9 +119,11 @@ void dfa() {
     }
     initdfa = aux;
     stari.insert(aux);
-    for (auto v : stari) {
+    qu.push(aux);
+    while (qu.empty()==0) {
+        string v=qu.front();
         for (char j : alphabet) {
-            set<int> aux2;
+            set<int> aux2;;
             for (int i : v) {
                 for (int k : nou[i][j]) {
                     aux2.insert(k);
@@ -130,9 +133,13 @@ void dfa() {
             for (int i : aux2) {
                 aux3 += i;
             }
-            stari.insert(aux3);
+            if (stari.find(aux3) == stari.end()) {
+                stari.insert(aux3);
+                qu.push(aux3);
+            }
             dfa[v][j] = aux3;
         }
+        qu.pop();
     }
 //    for(auto x: stari){
 //        for(auto k: x){
