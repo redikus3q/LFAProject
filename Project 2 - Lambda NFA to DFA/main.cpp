@@ -19,9 +19,32 @@ vector<char> alphabet;
 vector<unordered_set<int>> v;
 
 void parsestare(string x) {
-    for (int i : x) {
-        cout << i;
+    int j = 0, aux = 0;
+    while (j < x.length()) {
+        if (x[j] == '.') {
+            cout << aux;
+            aux = 0;
+        }
+        else {
+            aux = aux * 10 + (int)x[j];
+        }
+        j++;
     }
+}
+unordered_set<int> decodestare(string x){
+    int j = 0, aux = 0;
+    unordered_set<int> c;
+    while (j < x.length()) {
+        if (x[j] == '.') {
+            c.insert(aux);
+            aux = 0;
+        }
+        else {
+            aux = aux * 10 + (int)x[j];
+        }
+        j++;
+    }
+    return c;
 }
 
 void read() {
@@ -104,7 +127,6 @@ void dfa() {
             }
         }
     }
-
 /// nfa to dfa
     unordered_set<string> stari;
     queue<string> qu;
@@ -116,6 +138,7 @@ void dfa() {
     }
     for (int i : aux1) {
         aux += i;
+        aux += '.';
     }
     initdfa = aux;
     stari.insert(aux);
@@ -123,8 +146,8 @@ void dfa() {
     while (qu.empty()==0) {
         string v=qu.front();
         for (char j : alphabet) {
-            set<int> aux2;;
-            for (int i : v) {
+            set<int> aux2;
+            for (int i : decodestare(v)) {
                 for (int k : nou[i][j]) {
                     aux2.insert(k);
                 }
@@ -132,6 +155,7 @@ void dfa() {
             string aux3;
             for (int i : aux2) {
                 aux3 += i;
+                aux3 += '.';
             }
             if (stari.find(aux3) == stari.end()) {
                 stari.insert(aux3);
