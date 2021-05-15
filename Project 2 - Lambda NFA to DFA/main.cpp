@@ -14,38 +14,38 @@ ifstream in("a.in");
 typedef unordered_map<int, unordered_map<char, unordered_set<int>>> automat;
 int n, m, stareInitiala;
 automat automatInitial;
-unordered_set<int> StariFinale;
+unordered_set<int> stariFinale;
 vector<char> alphabet;
-vector<unordered_set<int>> v;
+vector<unordered_set<int>> lambdaInchideri;
 
-void parseazaStare(string x) {
-    int j = 0, aux = 0;
-    while (j < x.length()) {
-        if (x[j] == '.') {
-            cout << aux;
-            aux = 0;
+void parseazaStare(string stareString) {
+    int j = 0, stareInt = 0;
+    while (j < stareString.length()) {
+        if (stareString[j] == '.') {
+            cout << stareInt;
+            stareInt = 0;
         }
         else {
-            aux = aux * 10 + (int)x[j];
+            stareInt = stareInt * 10 + (int)stareString[j];
         }
         j++;
     }
 }
 
-unordered_set<int> decodeazaStare(string x){
-    int j = 0, aux = 0;
-    unordered_set<int> c;
-    while (j < x.length()) {
-        if (x[j] == '.') {
-            c.insert(aux);
-            aux = 0;
+unordered_set<int> decodeazaStare(string stareString){
+    int j = 0, stareInt = 0;
+    unordered_set<int> stare;
+    while (j < stareString.length()) {
+        if (stareString[j] == '.') {
+            stare.insert(stareInt);
+            stareInt = 0;
         }
         else {
-            aux = aux * 10 + (int)x[j];
+            stareInt = stareInt * 10 + (int)stareString[j];
         }
         j++;
     }
-    return c;
+    return stare;
 }
 
 void read() {
@@ -62,30 +62,30 @@ void read() {
     in >> a;
     for (int i = 0; i < a; i++) {
         in >> b;
-        fin.insert(b);
+        stariFinale.insert(b);
     }
 }
 
 void lambda() {
     queue<int> q;
-    unordered_set<int> aux;
-    v.assign(n, aux);
+    unordered_set<int> inchidere;
+    lambdaInchideri.assign(n, inchidere);
     for (int i = 0; i < n; i++) {
         q.push(i);
-        v[i].insert(i);
+        lambdaInchideri[i].insert(i);
         while (q.empty() == 0) {
             int x = q.front();
             q.pop();
             for (auto j : automatInitial[x]['l']) { /// parcurgere pt lambda tranzitii
-                if (v[i].find(j) == v[i].end()) {
+                if (lambdaInchideri[i].find(j) == lambdaInchideri[i].end()) {
                     q.push(j);
-                    v[i].insert(j);
+                    lambdaInchideri[i].insert(j);
                 }
             }
         }
-        for (int j : fin) { /// baga starile finale noi
-            if (v[i].find(j) != v[i].end()) {
-                fin.insert(i);
+        for (int j : stariFinale) { /// baga starile finale noi
+            if (lambdaInchideri[i].find(j) != lambdaInchideri[i].end()) {
+                stariFinale.insert(i);
             }
         }
     }
@@ -102,28 +102,28 @@ void dfa() {
     automat nou;
     for (int i = 0; i < n; i++) {
         for (char j : alphabet) {
-            unordered_set<int> aux1;
-            set<int> aux2;
-            for (int k : v[i]) {
+            unordered_set<int> stareNesortata;
+            set<int> stareSortata;
+            for (int k : lambdaInchideri[i]) {
                 if (automatInitial[k][j].empty() == 0) {
                     for (int l : automatInitial[k][j]) {
-                        aux1.insert(l);
+                        stareNesortata.insert(l);
                     }
                 }
             }
-            for (int k : aux1) {
-                if (v[k].empty() == 0) {
-                    for (int l : v[k]) {
-                        aux2.insert(l);
+            for (int k : stareNesortata) {
+                if (lambdaInchideri[k].empty() == 0) {
+                    for (int l : lambdaInchideri[k]) {
+                        stareSortata.insert(l);
                     }
                 }
             }
 //            cout << i << ' ' << j << endl;
-//            for(auto k: aux2){
+//            for(auto k: stareSortata){
 //                cout << k << " ";
 //            }
 //            cout << endl;
-            for (auto k : aux2) {
+            for (auto k : stareSortata) {
                 nou[i][j].insert(k);
             }
         }
@@ -131,38 +131,38 @@ void dfa() {
 /// nfa to dfa
     unordered_set<string> stari;
     queue<string> qu;
-    string aux, initdfa;
+    string stareString, initialaDfa;
     unordered_map<string, unordered_map<char, string>> dfa;
-    set<int> aux1;
-    for (int i : v[stareInitiala]) {
-        aux1.insert(i);
+    set<int> stareSortata;
+    for (int i : lambdaInchideri[stareInitiala]) {
+        stareSortata.insert(i);
     }
-    for (int i : aux1) {
-        aux += i;
-        aux += '.';
+    for (int i : stareSortata) {
+        stareString += i;
+        stareString += '.';
     }
-    initdfa = aux;
-    stari.insert(aux);
-    qu.push(aux);
+    initialaDfa = stareString;
+    stari.insert(stareString);
+    qu.push(stareString);
     while (qu.empty()==0) {
-        string v=qu.front();
+        string actual=qu.front();
         for (char j : alphabet) {
-            set<int> aux2;
-            for (int i : decodeazaStare(v)) {
+            set<int> stareSortata;
+            for (int i : decodeazaStare(actual)) {
                 for (int k : nou[i][j]) {
-                    aux2.insert(k);
+                    stareSortata.insert(k);
                 }
             }
-            string aux3;
-            for (int i : aux2) {
-                aux3 += i;
-                aux3 += '.';
+            string stareStringFin;
+            for (int i : stareSortata) {
+                stareStringFin += i;
+                stareStringFin += '.';
             }
-            if (stari.find(aux3) == stari.end()) {
-                stari.insert(aux3);
-                qu.push(aux3);
+            if (stari.find(stareStringFin) == stari.end()) {
+                stari.insert(stareStringFin);
+                qu.push(stareStringFin);
             }
-            dfa[v][j] = aux3;
+            dfa[actual][j] = stareStringFin;
         }
         qu.pop();
     }
@@ -174,12 +174,12 @@ void dfa() {
 //    }
 /// afisare
     cout << "Stare initiala: ";
-    parseazaStare(initdfa);
+    parseazaStare(initialaDfa);
     cout << '\n';
     cout << "Stari finale: ";
     for (auto i : stari) {
         for (int j : i) {
-            if (fin.find(j) != fin.end()) {
+            if (stariFinale.find(j) != stariFinale.end()) {
                 parseazaStare(i);
                 cout << " ";
                 break;
