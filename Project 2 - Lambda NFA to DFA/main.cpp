@@ -9,7 +9,7 @@
 
 using namespace std;
 
-ifstream in("b.in");
+ifstream in("a.in");
 
 typedef unordered_map<int, unordered_map<char, unordered_set<int>>> automat;
 int n, m, init;
@@ -31,6 +31,7 @@ void parsestare(string x) {
         j++;
     }
 }
+
 unordered_set<int> decodestare(string x){
     int j = 0, aux = 0;
     unordered_set<int> c;
